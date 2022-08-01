@@ -19,6 +19,5 @@ class UsersTableSeeder extends Seeder
     {
         User::factory()->admin()->withEmail('admin@admin.com')->create();
         User::factory(10)->create();
-
     }
 }
