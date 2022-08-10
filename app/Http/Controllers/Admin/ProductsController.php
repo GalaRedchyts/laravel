@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
@@ -12,7 +13,12 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        return view('admin/products/index');
+        //получение продуктов, paginate-помогает моделям получить полноценный функционал для пагинации(переход по страницам),
+        //возвращает количество продуктов взависимости от страницы
+        $products = Product::with('category')->paginate(5);
+        $products = Product::with('category')->paginate(10);
+
+        return view('admin/products/index', compact('products'));
     }
 
     /**
