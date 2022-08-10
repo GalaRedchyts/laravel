@@ -1,54 +1,55 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto">
-        <div class="flex flex-col">
-            <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                    <div class="overflow-hidden">
-                        <table class="min-w-full">
-                            <thead class="bg-white border-b">
-                            <tr>
-                                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    ID
-                                </th>
-                                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    Title
-                                </th>
-                                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    SKU
-                                </th>
-                                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    Price
-                                </th>
-                                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    Actions
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($products as $product)
-                                <tr class="bg-gray-100 border-b">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $product->id }}</td>
-                                    <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">{{ $product->title }}</td>
-                                    <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">{{ $product->SKU }}</td>
-                                    <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">{{ $product->price }}</td>
-                                    <td>
-                                        <a href="#" >
-                                            {{ __('Edit') }}
-                                        </a>
-                                        <a href="#" >
-                                            {{ __('Delete') }}
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <h3 class="text-center">{{ __('Products') }}</h3>
+            </div>
+            <div class="col-md-12">
+                @if (session('status'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
                     </div>
-                </div>
+                @endif
+            </div>
+            <div class="col-md-12">
+                <table class="table align-self-center">
+                    <thead>
+                    <tr>
+                        <th class="text-center" scope="col">ID</th>
+                        <th class="text-center" scope="col">Thumbnail</th>
+                        <th class="text-center" scope="col">Name</th>
+                        <th class="text-center" scope="col">Quantity</th>
+                        <th class="text-center" scope="col">Category</th>
+                        <th class="text-center" scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($products as $product)
+                        <tr>
+                            <td class="text-center" scope="col">{{ $product->id }}</td>
+                            <td class="text-center" scope="col"><img src="{{ $product->thumbnailUrl }}" width="100" height="100" alt=""></td>
+                            <td class="text-center" scope="col">{{ $product->title }}</td>
+                            <td class="text-center" scope="col">{{ $product->in_stock }}</td>
+                            <td class="text-center" scope="col">
+                                @include('categories.parts.category_view', ['category' => $product->category])
+                            </td>
+                            <td class="text-center" scope="col">
+                                <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-info form-control">Edit</a>
+                                <form action="{{ route('admin.products.destroy', $product) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="submit" class="btn btn-danger form-control" value="Remove">
+                                </form>
+                                {{--<a href="{{ route('products.show', $product) }}" class="btn btn-outline-success form-control">View</a>--}}
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+                {{ $products->links() }}
             </div>
         </div>
-        {{ $products->links() }}
     </div>
 @endsection
