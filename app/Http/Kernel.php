@@ -4,6 +4,8 @@ namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
+//поключение и работа все мидлваров(это класс проверки, проверяет до того, как класс попал в контроллер)
+
 class Kernel extends HttpKernel
 {
     /**
@@ -63,5 +65,6 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'admin' => \App\Http\Middleware\IsAdmin::class,
     ];
 }
