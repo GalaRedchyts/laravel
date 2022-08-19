@@ -16,8 +16,6 @@ class CategoryProductsSeeder extends Seeder
      */
     public function run()
     {
-        //$category->products; -> Collections (retrieve items from DB related to current category)
-        //$category->products(); -> Eloquent Query
         Category::factory(8)->create()->each(function($category) {
             Product::factory(rand(3,6))->make()->each(function($product) use ($category) {
                 $category->products()->create($product->attributesToArray());
