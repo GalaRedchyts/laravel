@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
 use App\Services\Contracts\FileStorageServiceContract;
 use App\Services\FileStorageService;
+use App\Services\ImagesService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -46,8 +48,10 @@ class ProductsController extends Controller
             DB::beginTransaction();
 
             $data = $request->validated();
+            $images = $data['images'] ?? [];
             $category = Category::find($data['category']);
             $product = $category->products()->create($data);
+            ImagesService::attach($product, 'images', $images);
 
             DB::commit();
 
@@ -58,17 +62,18 @@ class ProductsController extends Controller
             DB::rollBack();
             logs()->warning($e);
 
-            return redirect()->back()->with('warn', 'Oops smth wrong. See logs');
+            return redirect()->back()->with('warn', 'Oops smth wrong. See logs')->withInput();
         }
     }
 
     /**
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function edit($id)
+    public function edit(Product $product)
     {
-        //
+        $categories = Category::all();
+        return view('admin/products/edit', compact('product', 'categories'));
     }
 
     /**
@@ -76,7 +81,7 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProductRequest $request, Product $product)
     {
         //
     }
