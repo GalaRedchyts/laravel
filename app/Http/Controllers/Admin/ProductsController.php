@@ -7,6 +7,7 @@ use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Repositories\Contracts\ProductRepositoryContract;
 use App\Services\Contracts\FileStorageServiceContract;
 use App\Services\FileStorageService;
 use App\Services\ImagesService;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProductsController extends Controller
 {
+    public function __construct(protected ProductRepositoryContract $productRepository) {}
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
@@ -44,24 +46,10 @@ class ProductsController extends Controller
      */
     public function store(CreateProductRequest $request)
     {
-        try {
-            DB::beginTransaction();
-
-            $data = $request->validated();
-            $images = $data['images'] ?? [];
-            $category = Category::find($data['category']);
-            $product = $category->products()->create($data);
-            ImagesService::attach($product, 'images', $images);
-
-            DB::commit();
-
+        if ($product = $this->productRepository->create($request)) {
             return redirect()->route('admin.products.index')
                 ->with('status', "The product #{$product->id} was successfully created!");
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            logs()->warning($e);
-
+        } else {
             return redirect()->back()->with('warn', 'Oops smth wrong. See logs')->withInput();
         }
     }
@@ -79,19 +67,26 @@ class ProductsController extends Controller
     /**
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        if ($this->productRepository->update($product, $request)) {
+            return redirect()->route('admin.products.index')->with('status', "The product #{$product->id} was successfully updated!");
+        } else {
+            return redirect()->back()->with('warn', 'Oops smth wrong. See logs')->withInput();
+        }
     }
 
     /**
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        //
+        $product->delete();
+
+        return redirect()->route('admin.products.index')
+            ->with('status', "The product #{$product->id} was successfully removed!");
     }
 }

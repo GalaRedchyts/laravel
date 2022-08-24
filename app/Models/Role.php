@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Enums\Roles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,7 +31,7 @@ class Role extends Model
         return $query->where(
             'name',
             '=',
-            config('constants.db.roles.' . $role)
+            Roles::findByKey(ucfirst($role))->value
         );
     }
 }
