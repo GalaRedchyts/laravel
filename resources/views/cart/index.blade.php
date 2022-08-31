@@ -17,9 +17,10 @@
                             <th>Subtotal</th>
                         </tr>
                         </thead>
+
                         <tbody>
 
-                       @each('cart.parts.product_view', Cart::instance('cart')->content(), 'row')
+                        @each('cart.parts.product_view', Cart::instance('cart')->content(), 'row')
 
                         </tbody>
                     </table>
@@ -49,7 +50,7 @@
             </div>
             @auth
                 <div class="col-md-12 text-right">
-                    {{--                    <a href="{{ route('checkout') }}" class="btn btn-outline-success">{{ __('Proceed to checkout') }}</a>--}}
+                    <a href="{{ route('checkout') }}" class="btn btn-outline-success">{{ __('Proceed to checkout') }}</a>
                 </div>
             @endauth
         </div>

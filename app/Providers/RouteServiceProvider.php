@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Helpers\Enums\Roles;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class RouteServiceProvider extends ServiceProvider
     public const HOME = '/admin/dashboard';
 
     public const CUSTOMER_HOME = '/dashboard';
-
+    
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
      *
