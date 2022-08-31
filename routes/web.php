@@ -37,8 +37,8 @@ Route::delete('cart', [\App\Http\Controllers\CartController::class, 'remove'])->
 Route::post('cart/{product}/count', [\App\Http\Controllers\CartController::class, 'countUpdate'])->name('cart.count.update');
 
 Route::name('admin.')->prefix('admin')->middleware(['auth', 'admin'])->group(function() {
-    Route::get('/dashboard', function () {
-        return view('dashboard', ['role' => 'Admin']);
+    Route::get('/admin/dashboard', function () {
+        return view('/admin/dashboard', ['role' => 'Admin']);
     })->name('dashboard');
 
     Route::get('/categories/products/{id}' , [\App\Http\Controllers\Admin\CategoriesController::class, 'productsOfCategory'])->name('category.products');
@@ -49,5 +49,15 @@ Route::name('admin.')->prefix('admin')->middleware(['auth', 'admin'])->group(fun
 
 Route::middleware('auth')->group(function() {
     Route::post('product/{product}/rating/add', [\App\Http\Controllers\ProductsController::class, 'addRating'])->name('product.rating.add');
+
+    Route::name('account.')->prefix('account')->group(function () {
+       Route::get('/', [\App\Http\Controllers\Account\UsersController::class, 'index'])->name('index');
+       Route::get('{user}/edit', [\App\Http\Controllers\Account\UsersController::class, 'edit'])
+           ->name('edit')
+           ->middleware('can:view,user');
+       Route::put('{user}', [\App\Http\Controllers\Account\UsersController::class, 'update'])
+           ->name('update')
+           ->middleware('can:update,user');
+    });
 });
 
