@@ -30,7 +30,6 @@ class UserAccountRequest extends FormRequest
             "email" => ["required", "email"],
             "phone" => ["required", "string", new Phone()],
             "birthdate" => ["required", "date"],
-            "balance" => ["required", "numeric", "min:0"]
         ];
     }
 }
