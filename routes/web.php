@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 
+use App\Http\Controllers\Invoice\DownloadInvoiceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,14 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('invoice', function () {
+    $order = \App\Models\Order::all()->last();
+    $service = new \App\Services\InvoicesService();
+    $invoice = $service->generate($order);
+    $test = $invoice->save('public');
+    exit;
+});
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -30,7 +39,7 @@ Route::get('/dashboard', function () {
 
 Auth::routes();
 
-Route::resource('categories', \App\Http\Controllers\CategoriesController::class)->only(['show', 'index']);
+Route::resource('categories', \App\Http\Controllers\CategoriesController::class)->only(['show', 'index', 'create']);
 Route::resource('products', \App\Http\Controllers\ProductsController::class)->only(['show', 'index']);
 
 Route::get('cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart');
@@ -62,6 +71,9 @@ Route::middleware('auth')->group(function() {
     Route::get('checkout', \App\Http\Controllers\CheckoutController::class)->name('checkout');
     Route::post('order', \App\Http\Controllers\OrdersController::class)->name('order.create');
 
+    Route::get('/order/{order}/invoice', \App\Http\Controllers\Invoice\DownloadInvoiceController::class)
+        ->name('orders.generate.invoice');
+
     Route::name('account.')->prefix('account')->group(function () {
        Route::get('/', [\App\Http\Controllers\Account\UsersController::class, 'index'])->name('index');
        Route::get('{user}/edit', [\App\Http\Controllers\Account\UsersController::class, 'edit'])
@@ -73,6 +85,7 @@ Route::middleware('auth')->group(function() {
 
        Route::get('wishlist', \App\Http\Controllers\Account\WishListController::class)->name('wishlist');
        Route::get('telegram/callback',\App\Http\Controllers\TelegramCallbackController::class)->name('telegram.callback');
+       Route::get('orders', DownloadInvoiceController::class)->name('orders');
     });
 });
 

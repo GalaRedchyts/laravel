@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use App\Helpers\Enums\Roles;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -80,5 +79,10 @@ class User extends Authenticatable
         $this->wishes()->detach($product);
     }
 
-
+    public function fullName(): Attribute
+    {
+        return new Attribute(
+            get: fn() => ucfirst($this->attributes['name']) . ' ' . ucfirst($this->attributes['surname'])
+        );
+    }
 }
