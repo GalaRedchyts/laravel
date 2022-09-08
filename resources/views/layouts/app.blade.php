@@ -109,7 +109,7 @@
     </main>
     <script src="{{ asset('js/iziToast.js') }}"></script>
 </div>
-@include('vendor.lara-izitoast.toast')
+{{--@include('vendor.lara-izitoast.toast')--}}
 @stack('footer-scripts')
 </body>
 </html>

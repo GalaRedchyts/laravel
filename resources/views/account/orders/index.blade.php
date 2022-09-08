@@ -33,7 +33,7 @@
                             <td class="text-center" scope="col">{{ $order->total . '$' }}</td>
                             <td class="text-center" scope="col">
                                 <a href="{{ route('account.orders.show', $order) }}" class="btn btn-info">Detail</a>
-                                {{--                                    <a href="{{ route('orders.generate.invoice', $order) }}" class="btn btn-info">Invoice</a>--}}
+                                                                    <a href="{{ route('orders.generate.invoice', $order) }}" class="btn btn-info">Invoice</a>
                             </td>
                         </tr>
                     @endforeach

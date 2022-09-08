@@ -85,7 +85,7 @@ Route::middleware('auth')->group(function() {
 
        Route::get('wishlist', \App\Http\Controllers\Account\WishListController::class)->name('wishlist');
        Route::get('telegram/callback',\App\Http\Controllers\TelegramCallbackController::class)->name('telegram.callback');
-       Route::get('orders', DownloadInvoiceController::class)->name('orders');
+       Route::get('/orders/list', \App\Http\Controllers\Account\OrdersController::class)->name('orders.list');
     });
 });
 
