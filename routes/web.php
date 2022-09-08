@@ -47,6 +47,12 @@ Route::name('admin.')->prefix('admin')->middleware(['auth', 'admin'])->group(fun
 
     Route::resource('products', \App\Http\Controllers\Admin\ProductsController::class)->except(['show']);
     Route::resource('categories', \App\Http\Controllers\Admin\CategoriesController::class)->except(['show']);
+
+    Route::name('orders')->group(function () {
+        Route::get('orders', [\App\Http\Controllers\Admin\OrdersController::class, 'index'])->name('.index');
+        Route::get('orders/{order}/edit', [\App\Http\Controllers\Admin\OrdersController::class, 'edit'])->name('.edit');
+        Route::put('orders/{order}', [\App\Http\Controllers\Admin\OrdersController::class, 'update'])->name('.update');
+    });
 });
 
 Route::middleware('auth')->group(function() {
@@ -66,6 +72,7 @@ Route::middleware('auth')->group(function() {
            ->middleware('can:update,user');
 
        Route::get('wishlist', \App\Http\Controllers\Account\WishListController::class)->name('wishlist');
+       Route::get('telegram/callback',\App\Http\Controllers\TelegramCallbackController::class)->name('telegram.callback');
     });
 });
 
