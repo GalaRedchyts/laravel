@@ -1,21 +1,32 @@
-<?php
-$class = $row->price > $row->model->endPrice ? 'text-success' : 'text-danger';
-?>
 <tr>
     <td>
-        <img src="{{ $row->model->thumbnailUrl }}" alt="{{ $row->name }}" style="width: 75px;">
+        <img src="{{ $row->model->thumbnailUrl }}" alt="{{ $row->name }}" style="width: 100px;">
     </td>
     <td>
         <a href="{{ route('products.show', $row->id) }}"><strong>{{ $row->name }}</strong></a>
     </td>
-    <td>{{ $row->price }}$</td>
-    <td class="{{ $class }}">{{ $row->model->endPrice }}$</td>
-    <td>{{ $row->model->available ? 'Available' : 'Not Available' }}</td>
     <td>
-     {{-- <form action="{{ route('wishlist.delete', $row->id) }}" method="POST">--}}
+        <form action="{{ route('cart.count.update', $row->id) }}" method="POST">
+            @csrf
+            <input type="hidden" value="{{ $row->rowId }}" name="rowId">
+            <input type="number"
+                   min="1"
+                   value="{{ $row->qty }}"
+                   max="{{ $row->model->in_stock }}"
+                   name="product_count"
+            >
+            <input type="submit" class="btn btn-outline-success" value="Update count">
+        </form>
+    </td>
+    <td>{{ $row->price }}$</td>
+    <td>{{ $row->subtotal }}$</td>
+    <td>
+        <form action="{{ route('cart.remove') }}" method="POST">
             @csrf
             @method('DELETE')
-            <input type="submit" class="btn btn-danger" value="Remove">
+            <input type="hidden" value="{{ $row->rowId }}" name="rowId">
+            <input type="submit" class="btn btn-outline-danger" value="{{ __('Delete') }}">
         </form>
     </td>
 </tr>
+
