@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 
 use App\Http\Controllers\Invoice\DownloadInvoiceController;
+use App\Services\AwsPublicLinkService;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,11 +21,17 @@ Route::get('invoice', function () {
     $order = \App\Models\Order::all()->last();
     $service = new \App\Services\InvoicesService();
     $invoice = $service->generate($order);
-    $test = $invoice->save('public');
-    exit;
+    $test = $invoice->save('s3');
+    dd(AwsPublicLinkService::generate($test->filename));
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+
+Route::get('test', function () {
+    $product = \App\Models\Product::find(1);
+    dd(\Illuminate\Support\Facades\Cache::get("products.thumbnail.{$product->thumbnail}"));
+});
 
 Route::delete(
     'ajax/images/{image}',
