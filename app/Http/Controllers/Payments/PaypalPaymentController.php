@@ -53,7 +53,6 @@ class PaypalPaymentController extends Controller
             DB::beginTransaction();
 
             $result = $this->payPalClient->capturePaymentOrder($orderId);
-
             $order = $orderRepository->setTransaction($orderId, new TransactionDataAdapter(
                 self::PAYMENT_SYSTEM,
                 auth()->id(),
