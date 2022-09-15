@@ -27,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
             InvoicesServiceContract::class,
             InvoicesService::class
         );
+        $this->app->bind(
+            CommentsRepositoryContract::class,
+            CommentsRepository::class
+        );
     }
 
     /**
