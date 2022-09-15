@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 use willvincent\Rateable\Rateable;
 
 
@@ -75,7 +76,15 @@ class Product extends Model
 
     public function thumbnailUrl(): Attribute
     {
-        return new Attribute(get: fn() => Storage::url($this->attributes['thumbnail']));
+        return new Attribute(get: function() {
+            $key = "products.thumbnail.{$this->attributes['thumbnail']}";
+            if (!Cache::has($key)) {
+                $link = Storage::temporaryUrl($this->attributes['thumbnail'], now()->addMinutes(10));
+                Cache::put($key, $link, 540);
+                return $link;
+            }
+            return Cache::get($key);
+        });
     }
 
     public function endPrice(): Attribute
