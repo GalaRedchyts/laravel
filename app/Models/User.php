@@ -69,6 +69,11 @@ class User extends Authenticatable
         );
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function addToWish(Product $product)
     {
         $this->wishes()->attach($product);
